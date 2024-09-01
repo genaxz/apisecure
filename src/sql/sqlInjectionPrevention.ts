@@ -64,24 +64,43 @@ export class SqlInjectionPreventer {
 
   sanitizeQuery(query: string): string {
     const tokens = this.tokenizeQuery(query);
+    let inComment = false;
     const sanitized = tokens
       .map((token) => {
-        if (token.type === "identifier") {
-          return this.escapeIdentifier(token.value);
-        } else if (token.type === "value") {
-          return this.escapeValue(token.value);
-        } else {
+        if (token.type === "comment") {
+          inComment = true;
           return token.value;
         }
+        if (
+          inComment &&
+          token.type === "whitespace" &&
+          token.value.includes("\n")
+        ) {
+          inComment = false;
+        }
+        if (inComment) {
+          return token.value;
+        }
+        switch (token.type) {
+          case "identifier":
+            return this.escapeIdentifier(token.value);
+          case "value":
+            return token.value;
+          case "whitespace":
+            return token.value === "\n" ? "\n" : " ";
+          default:
+            return token.value;
+        }
       })
-      .join(" ");
+      .join("");
 
     globalLogger.info("Sanitized SQL query");
-    return sanitized;
+    return sanitized.trim();
   }
 
   private tokenizeQuery(query: string): Array<{ type: string; value: string }> {
-    const regex = /(\w+)|('[^']*')|("[^"]*")|(--.*$)|(\/\*[\s\S]*?\*\/)|\s+|./g;
+    const regex =
+      /(\w+)|('[^']*')|("[^"]*")|(--.*(?:\n|$))|(\/\*[\s\S]*?\*\/)|(\s+)|./g;
     const tokens: Array<{ type: string; value: string }> = [];
     let match;
     while ((match = regex.exec(query)) !== null) {

@@ -1,10 +1,11 @@
 import { randomBytes } from "crypto";
 import { Request, Response, NextFunction } from "express";
 import { getConfig } from "../utils/config";
+import { RateLimiter } from "../../src/protection/rateLimiter";
 
 declare module "express-serve-static-core" {
   interface Request {
-    session?: Session;
+    session?: Session | null;
   }
 }
 
@@ -22,6 +23,7 @@ export interface SessionStore {
   update(sessionId: string, data: { [key: string]: any }): Promise<void>;
   delete(sessionId: string): Promise<void>;
   cleanup(): Promise<void>;
+  refresh(sessionId: string): Promise<void>;
 }
 
 export class InMemorySessionStore implements SessionStore {
@@ -72,19 +74,36 @@ export class InMemorySessionStore implements SessionStore {
       }
     }
   }
+
+  async refresh(sessionId: string): Promise<void> {
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      const config = getConfig();
+      const now = Date.now();
+      session.expiresAt = now + config.sessionTTL;
+      this.sessions.set(sessionId, session);
+    }
+  }
 }
 
 export class SessionManager {
   private store: SessionStore;
+  private rateLimiter: RateLimiter;
 
   constructor(store: SessionStore = new InMemorySessionStore()) {
     this.store = store;
+    const config = getConfig();
+    this.rateLimiter = new RateLimiter([{ windowMs: 60000, maxRequests: 10 }]); // 10 requests per minute
+    setInterval(() => this.store.cleanup(), 300000); // Cleanup every 5 minutes by default
   }
 
-  createSession(
+  async createSession(
     userId: string,
     data: { [key: string]: any } = {}
   ): Promise<Session> {
+    if (!this.rateLimiter.tryAcquire(userId)) {
+      throw new Error("Rate limit exceeded for session creation");
+    }
     return this.store.create(userId, data);
   }
 
@@ -103,14 +122,30 @@ export class SessionManager {
     return this.store.delete(sessionId);
   }
 
+  async refreshSession(sessionId: string): Promise<void> {
+    await this.store.refresh(sessionId);
+  }
+
   middleware() {
     return async (req: Request, res: Response, next: NextFunction) => {
       const sessionId = req.cookies?.sessionId;
       if (sessionId) {
-        const session = await this.getSession(sessionId);
-        if (session) {
-          req.session = session;
+        try {
+          const session = await this.getSession(sessionId);
+          if (session) {
+            req.session = session;
+            await this.refreshSession(sessionId);
+            // Fetch the updated session after refreshing
+            req.session = await this.getSession(sessionId);
+          } else {
+            req.session = null;
+          }
+        } catch (error) {
+          console.error("Error in session middleware:", error);
+          req.session = null;
         }
+      } else {
+        req.session = null;
       }
       next();
     };

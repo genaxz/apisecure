@@ -2,14 +2,29 @@ import {
   getConfig,
   updateConfig,
   SecurityConfig,
+  ConfigManager,
 } from "../../src/utils/config";
 import { LogLevel } from "../../src/utils/securityLogger";
 
 describe("Configuration", () => {
   let originalConfig: SecurityConfig;
+  let originalEnv: NodeJS.ProcessEnv;
+
+  beforeAll(() => {
+    originalEnv = { ...process.env };
+    process.env.NODE_ENV = "test";
+    process.env.JWT_SECRET = "test-jwt-secret";
+    process.env.ENCRYPTION_SECRET = "test-encryption-secret";
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+  });
 
   beforeEach(() => {
     originalConfig = getConfig();
+    // Reset the ConfigManager instance
+    (ConfigManager as any).instance = null;
   });
 
   afterEach(() => {
@@ -19,7 +34,7 @@ describe("Configuration", () => {
 
   test("getConfig returns default configuration", () => {
     const config = getConfig();
-    expect(config.jwtSecret).toBeDefined();
+    expect(config.jwtSecret).toBe("");
     expect(config.jwtExpiresIn).toBe("1h");
     expect(config.bcryptSaltRounds).toBe(10);
     expect(config.csrfTokenLength).toBe(32);
@@ -51,5 +66,19 @@ describe("Configuration", () => {
     const newSecret = "new-secret-key";
     updateConfig({ jwtSecret: newSecret });
     expect(getConfig().jwtSecret).toBe(newSecret);
+  });
+
+  test("throws error when bcryptSaltRounds is set too low", () => {
+    expect(() => updateConfig({ bcryptSaltRounds: 5 })).toThrow(
+      "bcryptSaltRounds should be at least 10"
+    );
+  });
+
+  test("throws error when minimum password length is set too low", () => {
+    expect(() =>
+      updateConfig({
+        passwordPolicy: { ...originalConfig.passwordPolicy, minLength: 6 },
+      })
+    ).toThrow("Minimum password length should be at least 8 characters");
   });
 });

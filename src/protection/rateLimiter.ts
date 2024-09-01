@@ -24,6 +24,7 @@ export class RateLimiter {
   private getClientIdentifier(req: Request): string {
     return req.ip || req.connection.remoteAddress || "unknown";
   }
+
   private cleanup(): void {
     const now = Date.now();
     for (const [key, limitInfo] of this.storage) {
@@ -32,40 +33,57 @@ export class RateLimiter {
       }
     }
   }
+
   isAllowed(clientId: string): boolean {
     this.cleanup();
     const now = Date.now();
-    let isAllowed = true;
 
-    this.rules.forEach((rule) => {
+    return this.rules.every((rule) => {
       const key = `${clientId}:${rule.windowMs}`;
       const limitInfo = this.storage.get(key) || {
         count: 0,
         resetTime: now + rule.windowMs,
       };
 
+      return limitInfo.count < rule.maxRequests;
+    });
+  }
+
+  tryAcquire(clientId: string): boolean {
+    this.cleanup();
+    const now = Date.now();
+    let acquired = true;
+
+    this.rules.forEach((rule) => {
+      const key = `${clientId}:${rule.windowMs}`;
+      let limitInfo = this.storage.get(key) || {
+        count: 0,
+        resetTime: now + rule.windowMs,
+      };
+
       if (now > limitInfo.resetTime) {
-        limitInfo.count = 1;
-        limitInfo.resetTime = now + rule.windowMs;
-      } else {
-        limitInfo.count++;
+        limitInfo = {
+          count: 0,
+          resetTime: now + rule.windowMs,
+        };
       }
 
-      this.storage.set(key, limitInfo);
-
-      if (limitInfo.count > rule.maxRequests) {
-        isAllowed = false;
+      if (limitInfo.count < rule.maxRequests) {
+        limitInfo.count++;
+        this.storage.set(key, limitInfo);
+      } else {
+        acquired = false;
       }
     });
 
-    return isAllowed;
+    return acquired;
   }
 
   middleware() {
     return (req: Request, res: Response, next: NextFunction): void => {
       const clientId = this.getClientIdentifier(req);
 
-      if (this.isAllowed(clientId)) {
+      if (this.tryAcquire(clientId)) {
         next();
       } else {
         const error = new SecurityLibraryError("Rate limit exceeded", 429);
@@ -85,7 +103,7 @@ export class RateLimiter {
 
 export class BruteForceProtection {
   private failedAttempts: Map<string, number> = new Map();
-  private lastAttemptTime: Map<string, number> = new Map(); // Add this line
+  private lastAttemptTime: Map<string, number> = new Map();
   private lockoutDuration: number;
   private maxAttempts: number;
 
@@ -100,7 +118,7 @@ export class BruteForceProtection {
   recordFailedAttempt(identifier: string) {
     const attempts = (this.failedAttempts.get(identifier) || 0) + 1;
     this.failedAttempts.set(identifier, attempts);
-    this.lastAttemptTime.set(identifier, Date.now()); // Add this line
+    this.lastAttemptTime.set(identifier, Date.now());
 
     if (attempts >= this.maxAttempts) {
       globalLogger.warn("Account locked due to too many failed attempts", {
@@ -111,7 +129,7 @@ export class BruteForceProtection {
 
   resetAttempts(identifier: string) {
     this.failedAttempts.delete(identifier);
-    this.lastAttemptTime.delete(identifier); // Add this line
+    this.lastAttemptTime.delete(identifier);
   }
 
   isAllowed(identifier: string): boolean {

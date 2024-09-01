@@ -8,9 +8,13 @@ import { getConfig, SecurityConfig } from "../../src/utils/config";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-jest.mock("../../src/utils/rateLimiter");
+jest.mock("../../src/protection/rateLimiter");
 jest.mock("../../src/utils/logger");
-jest.mock("../../src/utils/config");
+jest.mock("../../src/utils/config", () => ({
+  getConfig: jest.fn(() => ({
+    defaultRateLimit: { windowMs: 900000, maxRequests: 100 },
+  })),
+}));
 
 type MockResponse = Partial<Response> & {
   locals: {
@@ -41,6 +45,7 @@ describe("AuthHelpers", () => {
         requireNumbers: true,
         requireSpecialChars: true,
         maxConsecutiveRepeats: 3,
+        minStrengthScore: 3,
       },
       passwordResetTTL: 3600000, // 1 hour in milliseconds
       twoFactorAuth: {

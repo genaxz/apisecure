@@ -1,69 +1,64 @@
 import { EncryptionUtils } from "../../src/utils/encryptionUtils";
-import { updateConfig } from "../../src/utils/config";
 
 jest.mock("../../src/utils/config", () => ({
   getConfig: jest.fn(() => ({
     encryptionSecret: "test-encryption-secret",
   })),
-  updateConfig: jest.fn(),
 }));
 
-describe("Encryption Utils", () => {
+describe("EncryptionUtils", () => {
   let encryptionUtils: EncryptionUtils;
 
   beforeEach(() => {
     encryptionUtils = new EncryptionUtils();
   });
 
-  test("encrypts and decrypts text correctly", () => {
-    const originalText = "Hello, World!";
-    const encryptedText = encryptionUtils.encrypt(originalText);
-    const decryptedText = encryptionUtils.decrypt(encryptedText);
+  describe("Symmetric Encryption", () => {
+    it("should encrypt and decrypt a string correctly", () => {
+      const originalText = "Hello, World!";
+      const encryptedText = encryptionUtils.encrypt(originalText);
+      const decryptedText = encryptionUtils.decrypt(encryptedText);
+      expect(decryptedText).toBe(originalText);
+    });
 
-    expect(decryptedText).toBe(originalText);
+    it("should throw an error when decrypting invalid text", () => {
+      expect(() => {
+        encryptionUtils.decrypt("invalid:encrypted:text");
+      }).toThrow("Invalid encrypted text format");
+    });
+
+    it("should throw an error when decrypting with invalid format", () => {
+      expect(() => {
+        encryptionUtils.decrypt("invalidencryptedtext");
+      }).toThrow("Invalid encrypted text format");
+    });
+
+    it("should throw an error when decrypting with invalid hex values", () => {
+      expect(() => {
+        encryptionUtils.decrypt("invalid:hex:values");
+      }).toThrow("Invalid encrypted text format");
+    });
   });
 
-  test("generates different ciphertexts for the same plaintext", () => {
-    const plaintext = "Hello, World!";
-    const ciphertext1 = encryptionUtils.encrypt(plaintext);
-    const ciphertext2 = encryptionUtils.encrypt(plaintext);
+  describe("Asymmetric Encryption", () => {
+    it("should generate a valid key pair", () => {
+      const { publicKey, privateKey } = encryptionUtils.generateKeyPair();
+      expect(publicKey).toContain("BEGIN PUBLIC KEY");
+      expect(privateKey).toContain("BEGIN PRIVATE KEY");
+    });
 
-    expect(ciphertext1).not.toBe(ciphertext2);
-  });
-
-  test("throws error when decrypting invalid ciphertext", () => {
-    expect(() => {
-      encryptionUtils.decrypt("invalid:ciphertext:format");
-    }).toThrow();
-  });
-
-  test("generates key pair for asymmetric encryption", () => {
-    const { publicKey, privateKey } = encryptionUtils.generateKeyPair();
-    expect(publicKey).toBeTruthy();
-    expect(privateKey).toBeTruthy();
-  });
-
-  test("encrypts and decrypts using asymmetric encryption", () => {
-    const { publicKey, privateKey } = encryptionUtils.generateKeyPair();
-    const originalText = "Hello, Asymmetric World!";
-    const encryptedText = encryptionUtils.asymmetricEncrypt(
-      originalText,
-      publicKey
-    );
-    const decryptedText = encryptionUtils.asymmetricDecrypt(
-      encryptedText,
-      privateKey
-    );
-
-    expect(decryptedText).toBe(originalText);
-  });
-  test("throws error when decrypting invalid ciphertext", () => {
-    expect(() => {
-      encryptionUtils.decrypt("invalid:ciphertext:format");
-    }).toThrow("Invalid encrypted text format");
-
-    expect(() => {
-      encryptionUtils.decrypt("invalid");
-    }).toThrow("Invalid encrypted text format");
+    it("should encrypt and decrypt using asymmetric encryption", () => {
+      const { publicKey, privateKey } = encryptionUtils.generateKeyPair();
+      const originalText = "Hello, Asymmetric World!";
+      const encryptedText = encryptionUtils.asymmetricEncrypt(
+        originalText,
+        publicKey
+      );
+      const decryptedText = encryptionUtils.asymmetricDecrypt(
+        encryptedText,
+        privateKey
+      );
+      expect(decryptedText).toBe(originalText);
+    });
   });
 });

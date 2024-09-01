@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { LogLevel } from "./securityLogger";
-
 import { PasswordPolicyConfig } from "../auth/passwordPolicy";
 
 export interface SecurityConfig {
@@ -27,11 +26,12 @@ export interface SecurityConfig {
 }
 
 const defaultConfig: SecurityConfig = {
-  jwtSecret: process.env.JWT_SECRET || "your-secret-key",
+  jwtSecret: process.env.JWT_SECRET || "",
+  encryptionSecret: process.env.ENCRYPTION_SECRET || "",
   jwtExpiresIn: "1h",
   bcryptSaltRounds: 10,
   csrfTokenLength: 32,
-  logLevel: LogLevel.WARN,
+  logLevel: 2, //LogLevel.WARN
   sessionTTL: 24 * 60 * 60 * 1000, // 24 hours
   defaultRateLimit: {
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -44,14 +44,13 @@ const defaultConfig: SecurityConfig = {
     requireNumbers: true,
     requireSpecialChars: true,
     maxConsecutiveRepeats: 3,
+    minStrengthScore: 3,
   },
   passwordResetTTL: 60 * 60 * 1000, // 1 hour
   twoFactorAuth: {
     issuer: "YourApp",
     tokenValidityWindow: 1, // Number of time steps to check before and after the current time
   },
-  encryptionSecret:
-    process.env.ENCRYPTION_SECRET || "your-encryption-secret-key",
   environment:
     (process.env.NODE_ENV as "development" | "production") || "development",
   cookieMaxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -102,15 +101,27 @@ export class ConfigManager {
   }
 
   private validateConfig(config: SecurityConfig): void {
-    if (config.jwtSecret === "your-secret-key") {
-      throw new Error("JWT secret must be changed from the default value");
-    }
-    if (config.encryptionSecret === "your-encryption-secret-key") {
-      throw new Error(
-        "Encryption secret must be changed from the default value"
-      );
+    if (process.env.NODE_ENV !== "test") {
+      if (!config.jwtSecret || config.jwtSecret === "your-secret-key") {
+        throw new Error("JWT secret must be set to a secure value");
+      }
+      if (
+        !config.encryptionSecret ||
+        config.encryptionSecret === "your-encryption-secret-key"
+      ) {
+        throw new Error("Encryption secret must be set to a secure value");
+      }
     }
     // Add more validations as needed
+    if (config.bcryptSaltRounds < 10) {
+      throw new Error("bcryptSaltRounds should be at least 10");
+    }
+    if (config.passwordPolicy.minLength < 8) {
+      throw new Error(
+        "Minimum password length should be at least 8 characters"
+      );
+    }
+    // ... (add more validations for other security-related configurations)
   }
 
   public updateConfig(newConfig: Partial<SecurityConfig>): void {

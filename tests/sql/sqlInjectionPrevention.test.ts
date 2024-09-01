@@ -42,7 +42,7 @@ describe("SQL Injection Preventer", () => {
       "SELECT id, name FROM users WHERE age > 18 AND city = 'New York'"
     );
     expect(sanitized).toBe(
-      "SELECT `id` , `name` FROM `users` WHERE `age` > 18 AND `city` = 'New York'"
+      "SELECT `id`, `name` FROM `users` WHERE `age` > 18 AND `city` = 'New York'"
     );
   });
 
@@ -51,7 +51,7 @@ describe("SQL Injection Preventer", () => {
       "SELECT * FROM users -- Get all users\nWHERE active = 1"
     );
     expect(sanitized).toBe(
-      "SELECT * FROM `users` -- Get all users\nWHERE `active` = 1"
+      "SELECT * FROM `users` -- Get all users\nWHERE active = 1"
     );
   });
 

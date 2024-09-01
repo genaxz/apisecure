@@ -3,7 +3,7 @@ import axios from "axios";
 import zxcvbn from "zxcvbn";
 import { getConfig } from "../utils/config";
 
-async function isPasswordCommon(password: string): Promise<boolean> {
+export async function isPasswordCommon(password: string): Promise<boolean> {
   const sha1 = crypto
     .createHash("sha1")
     .update(password)
@@ -31,6 +31,7 @@ export interface PasswordPolicyConfig {
   requireNumbers: boolean;
   requireSpecialChars: boolean;
   maxConsecutiveRepeats: number;
+  minStrengthScore: number;
 }
 
 export class PasswordPolicyEnforcer {
@@ -38,7 +39,7 @@ export class PasswordPolicyEnforcer {
 
   constructor(config?: Partial<PasswordPolicyConfig>) {
     const defaultConfig = getConfig().passwordPolicy;
-    this.config = { ...defaultConfig, ...config };
+    this.config = { ...defaultConfig, ...config, minStrengthScore: 3 };
   }
 
   async enforcePolicy(password: string): Promise<string[]> {
@@ -48,6 +49,7 @@ export class PasswordPolicyEnforcer {
       errors.push(
         `Password must be at least ${this.config.minLength} characters long.`
       );
+      return errors; // Return early if password is too short
     }
 
     if (this.config.requireUppercase && !/[A-Z]/.test(password)) {
@@ -76,13 +78,15 @@ export class PasswordPolicyEnforcer {
         `Password must not contain more than ${this.config.maxConsecutiveRepeats} consecutive repeating characters.`
       );
     }
+
     if (await isPasswordCommon(password)) {
       errors.push(
         "This password has been exposed in data breaches. Please choose a different password."
       );
     }
+
     const strength = zxcvbn(password);
-    if (strength.score < 3) {
+    if (strength.score < this.config.minStrengthScore) {
       errors.push("Password is too weak. Please choose a stronger password.");
     }
 

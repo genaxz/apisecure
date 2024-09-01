@@ -1,4 +1,5 @@
 import validator from "validator";
+import { encode } from "html-entities";
 
 export interface Validator {
   validate(input: string): boolean;
@@ -24,11 +25,16 @@ export class StringSanitizer implements Sanitizer<string> {
   private maxLength: number;
 
   constructor(maxLength: number = 255) {
+    if (maxLength <= 0) {
+      throw new Error("maxLength must be greater than 0");
+    }
     this.maxLength = maxLength;
   }
 
   sanitize(input: string): string {
-    return validator.trim(validator.escape(input)).substring(0, this.maxLength);
+    const trimmed = input.trim();
+    const escaped = encode(trimmed);
+    return escaped.substring(0, this.maxLength);
   }
 }
 
@@ -40,6 +46,9 @@ export class NumberSanitizer implements Sanitizer<number | null> {
     min: number = Number.MIN_SAFE_INTEGER,
     max: number = Number.MAX_SAFE_INTEGER
   ) {
+    if (min > max) {
+      throw new Error("min must be less than or equal to max");
+    }
     this.min = min;
     this.max = max;
   }
@@ -71,6 +80,9 @@ export class LengthValidator implements Validator {
   private maxLength: number;
 
   constructor(minLength: number, maxLength: number) {
+    if (minLength < 0 || maxLength < minLength) {
+      throw new Error("Invalid length range");
+    }
     this.minLength = minLength;
     this.maxLength = maxLength;
   }
@@ -148,6 +160,11 @@ export class InputValidator {
 }
 
 // DoS prevention utility
-export function truncateInput(input: string, maxLength: number = 1000): string {
-  return input.substring(0, maxLength);
+export function truncateInput(
+  input: string,
+  maxLength: number = 1000,
+  suffix: string = "..."
+): string {
+  if (input.length <= maxLength) return input;
+  return input.substring(0, maxLength - suffix.length) + suffix;
 }

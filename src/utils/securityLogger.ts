@@ -32,17 +32,21 @@ export class SecurityLogger {
       if (level >= config.logLevel) {
         const timestamp = new Date().toISOString();
         const sanitizedMeta = this.sanitize(meta);
-        const logEntry = JSON.stringify({
+        const logEntry = {
           timestamp,
           level: LogLevel[level],
           message,
           meta: sanitizedMeta,
-        });
+        };
 
-        console.log(logEntry);
+        const formattedLog = `[${timestamp}] ${LogLevel[level]}: ${message}`;
+        console.log(
+          formattedLog,
+          sanitizedMeta ? JSON.stringify(sanitizedMeta) : ""
+        );
 
         if (this.logFile) {
-          fs.appendFileSync(this.logFile, logEntry + "\n");
+          fs.appendFileSync(this.logFile, JSON.stringify(logEntry) + "\n");
         }
       }
     } catch (error: unknown) {
@@ -62,7 +66,7 @@ export class SecurityLogger {
       return data;
     }
 
-    const sanitized: any = {};
+    const sanitized: any = Array.isArray(data) ? [] : {};
     for (const [key, value] of Object.entries(data)) {
       if (this.isSensitiveField(key)) {
         sanitized[key] = "[REDACTED]";
@@ -76,9 +80,22 @@ export class SecurityLogger {
   }
 
   private isSensitiveField(field: string): boolean {
-    const sensitiveFields = ["password", "token", "secret", "key", "cookie"];
-    return sensitiveFields.some((sensitive) =>
-      field.toLowerCase().includes(sensitive)
+    const sensitiveFields = [
+      "password",
+      "token",
+      "secret",
+      "api_key",
+      "apikey",
+      "access_token",
+      "refresh_token",
+      "private_key",
+      "session_id",
+    ];
+    return sensitiveFields.some(
+      (sensitive) =>
+        field.toLowerCase() === sensitive ||
+        field.toLowerCase().endsWith("_" + sensitive) ||
+        field.toLowerCase().startsWith(sensitive + "_")
     );
   }
 

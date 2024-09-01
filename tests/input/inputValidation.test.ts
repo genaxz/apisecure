@@ -43,12 +43,21 @@ describe("Input Validation", () => {
 
     test("trims and escapes string", () => {
       expect(sanitizer.sanitize(' <script>alert("XSS")</script> ')).toBe(
-        "&lt;script&gt;"
+        "&lt;script"
       );
     });
 
     test("truncates string to max length", () => {
       expect(sanitizer.sanitize("a".repeat(20))).toBe("a".repeat(10));
+    });
+
+    test("throws error for invalid maxLength", () => {
+      expect(() => new StringSanitizer(0)).toThrow(
+        "maxLength must be greater than 0"
+      );
+      expect(() => new StringSanitizer(-1)).toThrow(
+        "maxLength must be greater than 0"
+      );
     });
   });
 
@@ -66,6 +75,12 @@ describe("Input Validation", () => {
 
     test("returns null for invalid number", () => {
       expect(sanitizer.sanitize("not-a-number")).toBe(null);
+    });
+
+    test("throws error for invalid min/max", () => {
+      expect(() => new NumberSanitizer(100, 0)).toThrow(
+        "min must be less than or equal to max"
+      );
     });
   });
 
@@ -111,6 +126,11 @@ describe("Input Validation", () => {
     test("invalidates string outside length range", () => {
       expect(validator.validate("abcd")).toBe(false);
       expect(validator.validate("abcdefghijk")).toBe(false);
+    });
+
+    test("throws error for invalid length range", () => {
+      expect(() => new LengthValidator(-1, 10)).toThrow("Invalid length range");
+      expect(() => new LengthValidator(10, 5)).toThrow("Invalid length range");
     });
   });
 
@@ -168,6 +188,13 @@ describe("Input Validation", () => {
         sanitizeArray(["10", "50", "not-a-number", "200"], sanitizer)
       ).toEqual([10, 50, 100]);
     });
+
+    test("filters out null values", () => {
+      const sanitizer = new NumberSanitizer(0, 100);
+      expect(
+        sanitizeArray(["10", "not-a-number", "50", "invalid"], sanitizer)
+      ).toEqual([10, 50]);
+    });
   });
 
   describe("InputValidator", () => {
@@ -189,7 +216,7 @@ describe("Input Validation", () => {
 
   describe("truncateInput", () => {
     test("truncates input to specified length", () => {
-      expect(truncateInput("abcdefghij", 5)).toBe("abcde");
+      expect(truncateInput("abcdefghij", 5)).toBe("ab...");
     });
 
     test("does not modify input shorter than max length", () => {
@@ -199,6 +226,10 @@ describe("Input Validation", () => {
     test("uses default max length if not specified", () => {
       const longInput = "a".repeat(2000);
       expect(truncateInput(longInput).length).toBe(1000);
+    });
+
+    test("uses custom suffix", () => {
+      expect(truncateInput("abcdefghij", 7, "***")).toBe("abcd***");
     });
   });
 });

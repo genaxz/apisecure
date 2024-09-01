@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import { getConfig } from "./config";
-
 interface CipherWithAuthTag extends crypto.Cipher {
   getAuthTag(): Buffer;
 }
@@ -34,31 +33,35 @@ export class EncryptionUtils {
 
     const authTag = cipher.getAuthTag();
 
-    return iv.toString("hex") + ":" + encrypted + ":" + authTag.toString("hex");
+    return `${iv.toString("hex")}:${encrypted}:${authTag.toString("hex")}`;
   }
 
   decrypt(encryptedText: string): string {
-    const [ivHex, encryptedHex, authTagHex] = encryptedText.split(":");
+    try {
+      const [ivHex, encryptedHex, authTagHex] = encryptedText.split(":");
 
-    if (!ivHex || !encryptedHex || !authTagHex) {
+      if (!ivHex || !encryptedHex || !authTagHex) {
+        throw new Error("Invalid encrypted text format");
+      }
+
+      const iv = Buffer.from(ivHex, "hex");
+      const encrypted = Buffer.from(encryptedHex, "hex");
+      const authTag = Buffer.from(authTagHex, "hex");
+
+      const decipher = crypto.createDecipheriv(
+        this.algorithm,
+        this.secretKey,
+        iv
+      ) as DecipherWithAuthTag;
+      decipher.setAuthTag(authTag);
+
+      let decrypted = decipher.update(encrypted);
+      decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+      return decrypted.toString("utf8");
+    } catch (error) {
       throw new Error("Invalid encrypted text format");
     }
-
-    const iv = Buffer.from(ivHex, "hex");
-    const encrypted = Buffer.from(encryptedHex, "hex");
-    const authTag = Buffer.from(authTagHex, "hex");
-
-    const decipher = crypto.createDecipheriv(
-      this.algorithm,
-      this.secretKey,
-      iv
-    ) as DecipherWithAuthTag;
-    decipher.setAuthTag(authTag);
-
-    let decrypted = decipher.update(encrypted);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-    return decrypted.toString("utf8");
   }
 
   generateKeyPair(): { publicKey: string; privateKey: string } {

@@ -1,6 +1,6 @@
-# SecureX: A Comprehensive API Security Library
+# secure-nxgen: A Comprehensive API Security Library
 
-**SecureX** is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for:
+**secure-nxgen** is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for:
 
 - Input Validation
 - SQL Injection Prevention
@@ -15,16 +15,15 @@
 
 ## Installation
 
-To install SecureX, use npm:
+To install secure-nxgen, use npm:
+
+npm install secure-nxgen
+
+# Input Validation
+
+- The input validation module provides tools for validating and sanitizing user inputs.
 
 ```bash
-npm install securex
-
-
-Usage
-Input Validation
-The input validation module provides tools for validating and sanitizing user inputs.
-
 import {
   EmailValidator,
   UrlValidator,
@@ -35,54 +34,47 @@ import {
   LengthValidator,
   RegexValidator,
   InputValidator
-} from 'securex';
+} from 'secure-nxgen';
 
 // Email validation
 const emailValidator = new EmailValidator();
-console.log(emailValidator.validate('user@example.com')); // true
+console.log(emailValidator.isValid('example@example.com'));  // true or false
 
 // URL validation
 const urlValidator = new UrlValidator();
-console.log(urlValidator.validate('https://example.com')); // true
+console.log(urlValidator.isValid('https://example.com'));  // true or false
 
 // String sanitization
-const stringSanitizer = new StringSanitizer(100); // max length 100
-console.log(stringSanitizer.sanitize('   <script>alert("XSS")</script>   '));
-// Output: 'alert("XSS")'
+const stringSanitizer = new StringSanitizer();
+console.log(stringSanitizer.sanitize('<script>alert("XSS")</script>'));  // sanitized output
 
 // Number sanitization
-const numberSanitizer = new NumberSanitizer(0, 100);
-console.log(numberSanitizer.sanitize('42')); // 42
-console.log(numberSanitizer.sanitize('not a number')); // null
+const numberSanitizer = new NumberSanitizer();
+console.log(numberSanitizer.sanitize('123abc'));  // sanitized number or error
 
 // Boolean sanitization
 const booleanSanitizer = new BooleanSanitizer();
-console.log(booleanSanitizer.sanitize('true')); // true
-console.log(booleanSanitizer.sanitize('0')); // false
+console.log(booleanSanitizer.sanitize('true'));  // true or false
 
 // Alphanumeric validation
 const alphanumericValidator = new AlphanumericValidator();
-console.log(alphanumericValidator.validate('abc123')); // true
+console.log(alphanumericValidator.isValid('abc123'));  // true or false
 
 // Length validation
 const lengthValidator = new LengthValidator(5, 10);
-console.log(lengthValidator.validate('abcdef')); // true
+console.log(lengthValidator.isValid('abcdefg'));  // true or false
 
 // Regex validation
-const regexValidator = new RegexValidator(/^[A-Z]{3}-\d{3}$/);
-console.log(regexValidator.validate('ABC-123')); // true
+const regexValidator = new RegexValidator(/^[a-z]+$/);
+console.log(regexValidator.isValid('abc'));  // true or false
 
-// Combining validators
-const isValid = InputValidator.validate('example@email.com', [
-  new EmailValidator(),
-  new LengthValidator(5, 50)
-]);
-console.log(isValid); // true
+#!/bin/bash
 
+#
 SQL Injection Prevention
 Protect your database queries from SQL injection attacks
 
-import { SqlInjectionPreventer } from 'securex';
+import { SqlInjectionPreventer } from 'secure-nxgen';
 
 const sqlPreventer = new SqlInjectionPreventer();
 
@@ -108,7 +100,7 @@ console.log(sanitizedQuery);
 XSS Protection
 Prevent Cross-Site Scripting (XSS) attacks in your application.
 
-import { XssProtector } from 'securex';
+import { XssProtector } from 'secure-nxgen';
 
 const xssProtector = new XssProtector();
 
@@ -130,7 +122,7 @@ CSRF Protection
 Implement Cross-Site Request Forgery (CSRF) protection in your Express application.
 
 import express from 'express';
-import { CsrfProtector } from 'securex';
+import { CsrfProtector } from 'secure-nxgen';
 
 const app = express();
 const csrfProtector = new CsrfProtector();
@@ -157,7 +149,7 @@ app.post('/submit', (req, res) => {
 Authentication Helpers
 Implement secure authentication in your application.
 
-import { AuthHelpers } from 'securex';
+import { AuthHelpers } from 'secure-nxgen';
 
 const authHelpers = new AuthHelpers();
 
@@ -188,7 +180,7 @@ app.get('/admin', authHelpers.authorize('admin'), (req, res) => {
 Password Policy Enforcement
 Enforce strong password policies in your application.
 
-import { PasswordPolicyEnforcer } from 'securex';
+import { PasswordPolicyEnforcer } from 'secure-nxgen';
 
 const policyEnforcer = new PasswordPolicyEnforcer();
 
@@ -204,7 +196,7 @@ if (errors.length > 0) {
 Password Reset Management
 Implement secure password reset functionality.
 
-import { PasswordResetManager } from 'securex';
+import { PasswordResetManager } from 'secure-nxgen';
 
 const resetManager = new PasswordResetManager();
 
@@ -229,7 +221,7 @@ resetManager.cleanupExpiredTokens();
 Two-Factor Authentication
 Implement two-factor authentication (2FA) in your application.
 
-import { TwoFactorAuthManager } from 'securex';
+import { TwoFactorAuthManager } from 'secure-nxgen';
 
 const twoFAManager = new TwoFactorAuthManager();
 
@@ -248,7 +240,7 @@ const qrCodeUrl = twoFAManager.getQRCodeUrl('user123', 'MyApp');
 Session Management
 Implement secure session management in your Express application.
 
-import { SessionManager, InMemorySessionStore } from 'securex';
+import { SessionManager, InMemorySessionStore } from 'secure-nxgen';
 
 const sessionStore = new InMemorySessionStore();
 const sessionManager = new SessionManager(sessionStore);
@@ -290,7 +282,7 @@ app.post('/logout', async (req, res) => {
 Rate Limiting and Brute Force Protection
 Implement rate limiting and protect against brute force attacks.
 
-import { RateLimiter, BruteForceProtection } from 'securex';
+import { RateLimiter, BruteForceProtection } from 'secure-nxgen';
 
 const rateLimiter = new RateLimiter([
   { windowMs: 15 * 60 * 1000, maxRequests: 100 } // 100 requests per 15 minutes
@@ -323,5 +315,5 @@ app.post('/login', (req, res) => {
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-This README provides a comprehensive overview of the securex library, including installation instructions and detailed usage examples for each feature. You may want to adjust some parts based on the exact implementation details or add more specific information about your project's structure and usage.
+This README provides a comprehensive overview of the secure-nxgen library, including installation instructions and detailed usage examples for each feature. You may want to adjust some parts based on the exact implementation details or add more specific information about your project's structure and usage.
 ```
