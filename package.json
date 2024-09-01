@@ -6,10 +6,11 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ravigonthina/nxgenz-secure.git"
+    "url": "https://github.com/ravigonthina/securex.git"
   },
   "scripts": {
-    "build": "node dist/index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest",
@@ -19,6 +20,11 @@
     "api",
     "security",
     "nodejs"
+  ],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "author": "RaviGonthina@nxgens",
   "license": "MIT",
