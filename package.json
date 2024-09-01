@@ -1,0 +1,57 @@
+{
+  "name": "securex",
+  "version": "0.1.0",
+  "description": "A comprehensive API security library",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ravigonthina/nxgenz-secure.git"
+  },
+  "scripts": {
+    "build": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "api",
+    "security",
+    "nodejs"
+  ],
+  "author": "RaviGonthina@nxgens",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "dompurify": "^3.0.9",
+    "express": "^4.18.3",
+    "hi-base32": "^0.5.1",
+    "html-entities": "^2.3.3",
+    "jsdom": "^24.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "sqlstring": "^2.3.3",
+    "validator": "^13.12.0",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/dompurify": "^2.3.3",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.0.2",
+    "@types/jsdom": "^16.2.13",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^16.11.6",
+    "@types/sqlstring": "^2.3.0",
+    "@types/validator": "^13.6.3",
+    "@types/zxcvbn": "^4.4.5",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "disclaimer": "This library is provided as-is and does not guarantee complete protection against all security threats. Users should implement additional security measures and keep their systems updated."
+}
