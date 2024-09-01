@@ -1,13 +1,13 @@
 # API Security Library
 
-# nxgen-secure: A Comprehensive API Security Library
+# securex: A Comprehensive API Security Library
 
-nxgen-secure is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for input validation, SQL injection prevention, XSS protection, CSRF protection, and more.
+securex is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for input validation, SQL injection prevention, XSS protection, CSRF protection, and more.
 
 ## Installation
 
 ```bash
-npm install nxgen-secure
+npm install securex
 
 Features
 
@@ -36,7 +36,7 @@ import {
   LengthValidator,
   RegexValidator,
   InputValidator
-} from 'nxgen-secure';
+} from 'securex';
 
 // Email validation
 const emailValidator = new EmailValidator();
@@ -83,7 +83,7 @@ console.log(isValid); // true
 SQL Injection Prevention
 Protect your database queries from SQL injection attacks
 
-import { SqlInjectionPreventer } from 'nxgen-secure';
+import { SqlInjectionPreventer } from 'securex';
 
 const sqlPreventer = new SqlInjectionPreventer();
 
@@ -109,7 +109,7 @@ console.log(sanitizedQuery);
 XSS Protection
 Prevent Cross-Site Scripting (XSS) attacks in your application.
 
-import { XssProtector } from 'nxgen-secure';
+import { XssProtector } from 'securex';
 
 const xssProtector = new XssProtector();
 
@@ -131,7 +131,7 @@ CSRF Protection
 Implement Cross-Site Request Forgery (CSRF) protection in your Express application.
 
 import express from 'express';
-import { CsrfProtector } from 'nxgen-secure';
+import { CsrfProtector } from 'securex';
 
 const app = express();
 const csrfProtector = new CsrfProtector();
@@ -158,7 +158,7 @@ app.post('/submit', (req, res) => {
 Authentication Helpers
 Implement secure authentication in your application.
 
-import { AuthHelpers } from 'nxgen-secure';
+import { AuthHelpers } from 'securex';
 
 const authHelpers = new AuthHelpers();
 
@@ -189,7 +189,7 @@ app.get('/admin', authHelpers.authorize('admin'), (req, res) => {
 Password Policy Enforcement
 Enforce strong password policies in your application.
 
-import { PasswordPolicyEnforcer } from 'nxgen-secure';
+import { PasswordPolicyEnforcer } from 'securex';
 
 const policyEnforcer = new PasswordPolicyEnforcer();
 
@@ -205,7 +205,7 @@ if (errors.length > 0) {
 Password Reset Management
 Implement secure password reset functionality.
 
-import { PasswordResetManager } from 'nxgen-secure';
+import { PasswordResetManager } from 'securex';
 
 const resetManager = new PasswordResetManager();
 
@@ -230,7 +230,7 @@ resetManager.cleanupExpiredTokens();
 Two-Factor Authentication
 Implement two-factor authentication (2FA) in your application.
 
-import { TwoFactorAuthManager } from 'nxgen-secure';
+import { TwoFactorAuthManager } from 'securex';
 
 const twoFAManager = new TwoFactorAuthManager();
 
@@ -249,7 +249,7 @@ const qrCodeUrl = twoFAManager.getQRCodeUrl('user123', 'MyApp');
 Session Management
 Implement secure session management in your Express application.
 
-import { SessionManager, InMemorySessionStore } from 'nxgen-secure';
+import { SessionManager, InMemorySessionStore } from 'securex';
 
 const sessionStore = new InMemorySessionStore();
 const sessionManager = new SessionManager(sessionStore);
@@ -291,7 +291,7 @@ app.post('/logout', async (req, res) => {
 Rate Limiting and Brute Force Protection
 Implement rate limiting and protect against brute force attacks.
 
-import { RateLimiter, BruteForceProtection } from 'nxgen-secure';
+import { RateLimiter, BruteForceProtection } from 'securex';
 
 const rateLimiter = new RateLimiter([
   { windowMs: 15 * 60 * 1000, maxRequests: 100 } // 100 requests per 15 minutes
@@ -324,5 +324,5 @@ app.post('/login', (req, res) => {
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-This README provides a comprehensive overview of the nxgen-secure library, including installation instructions and detailed usage examples for each feature. You may want to adjust some parts based on the exact implementation details or add more specific information about your project's structure and usage.
+This README provides a comprehensive overview of the securex library, including installation instructions and detailed usage examples for each feature. You may want to adjust some parts based on the exact implementation details or add more specific information about your project's structure and usage.
 ```
