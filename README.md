@@ -1,26 +1,25 @@
-# API Security Library
+# SecureX: A Comprehensive API Security Library
 
-# securex: A Comprehensive API Security Library
+**SecureX** is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for:
 
-securex is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for input validation, SQL injection prevention, XSS protection, CSRF protection, and more.
+- Input Validation
+- SQL Injection Prevention
+- XSS Protection
+- CSRF Protection
+- Authentication Helpers
+- Password Policy Enforcement
+- Password Reset Management
+- Two-Factor Authentication
+- Session Management
+- Rate Limiting and Brute Force Protection
 
 ## Installation
+
+To install SecureX, use npm:
 
 ```bash
 npm install securex
 
-Features
-
-Input Validation
-SQL Injection Prevention
-XSS Protection
-CSRF Protection
-Authentication Helpers
-Password Policy Enforcement
-Password Reset Management
-Two-Factor Authentication
-Session Management
-Rate Limiting and Brute Force Protection
 
 Usage
 Input Validation
