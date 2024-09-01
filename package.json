@@ -1,12 +1,12 @@
 {
-  "name": "secure-nxgen",
+  "name": "securenx",
   "version": "0.1.0",
   "description": "A comprehensive API security library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ravigonthina/secure-nxgen.git"
+    "url": "https://github.com/ravigonthina/securenx.git"
   },
   "scripts": {
     "build": "tsc",
