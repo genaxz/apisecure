@@ -36,14 +36,14 @@ export class PasswordResetManager {
     return resetToken.userId;
   }
 
-  resetPassword(token: string, newPassword: string): string[] {
+  async resetPassword(token: string, newPassword: string): Promise<string[]> {
     const userId = this.verifyResetToken(token);
 
     if (!userId) {
       return ["Invalid or expired reset token"];
     }
 
-    const policyErrors = this.policyEnforcer.enforcePolicy(newPassword);
+    const policyErrors = await this.policyEnforcer.enforcePolicy(newPassword);
 
     if (policyErrors.length > 0) {
       return policyErrors;
