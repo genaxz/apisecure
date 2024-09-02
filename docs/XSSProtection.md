@@ -34,7 +34,7 @@ Basic usage with Express.js:
 
 ```javascript
 const express = require("express");
-const { XssProtector } = require("securenx");
+const { XssProtector } = require("apisecure");
 
 const app = express();
 const xssProtector = new XssProtector();
@@ -70,7 +70,7 @@ Implementing XSS protection in a Nest.js application:
 ```typescript
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { XssProtector } from 'securenx';
+import { XssProtector } from 'apisecure';
 
 @Injectable()
 export class XssProtectionMiddleware implements NestMiddleware {
@@ -109,7 +109,7 @@ Using XSS protection with Koa.js:
 const Koa = require("koa");
 const Router = require("koa-router");
 const bodyParser = require("koa-bodyparser");
-const { XssProtector } = require("securenx");
+const { XssProtector } = require("apisecure");
 
 const app = new Koa();
 const router = new Router();

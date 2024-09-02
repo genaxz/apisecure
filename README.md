@@ -1,4 +1,4 @@
-# Securenx is a Comprehensive Authentication Package
+# apisecure is a Comprehensive Authentication Package
 
 A robust and flexible authentication solution for Node.js applications, providing a suite of security features to protect your web applications.
 
@@ -27,7 +27,7 @@ A robust and flexible authentication solution for Node.js applications, providin
 ## Installation
 
 ```bash
-npm install securenx
+npm install apisecure
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ Here's a basic example of how to use some of the core features:
 
 ```javascript
 const express = require("express");
-const { AuthHelpers, SessionManager, XssProtector } = require("securenx");
+const { AuthHelpers, SessionManager, XssProtector } = require("apisecure");
 
 const app = express();
 const authHelpers = new AuthHelpers();

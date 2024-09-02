@@ -33,7 +33,7 @@ Basic usage with Node.js and MySQL:
 
 ```javascript
 const mysql = require("mysql");
-const { SqlInjectionPreventer } = require("securenx");
+const { SqlInjectionPreventer } = require("apisecure");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -71,7 +71,7 @@ Implementing SQL injection prevention in an Express.js application with PostgreS
 ```javascript
 const express = require("express");
 const { Pool } = require("pg");
-const { SqlInjectionPreventer } = require("securenx");
+const { SqlInjectionPreventer } = require("apisecure");
 
 const app = express();
 app.use(express.json());
@@ -118,7 +118,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
-import { SqlInjectionPreventer } from "securenx";
+import { SqlInjectionPreventer } from "apisecure";
 
 @Injectable()
 export class UserService {

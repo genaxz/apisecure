@@ -23,7 +23,7 @@ This package provides robust input validation and sanitization tools for your we
 
 ```typescript
 import express from "express";
-import { InputProcessorFactory, InputValidator } from "securenx";
+import { InputProcessorFactory, InputValidator } from "apisecure";
 
 const app = express();
 app.use(express.json());
@@ -59,7 +59,7 @@ app.listen(3000, () => console.log("Server running on port 3000"));
 #### Input Sanitization
 
 ```typescript
-import { InputProcessorFactory, sanitizeArray } from "securenx";
+import { InputProcessorFactory, sanitizeArray } from "apisecure";
 
 app.post("/createProfile", (req, res) => {
   const { name, age, interests } = req.body;
@@ -86,7 +86,7 @@ app.post("/createProfile", (req, res) => {
 #### Custom Validation
 
 ```typescript
-import { RegexValidator, InputValidator } from "securenx";
+import { RegexValidator, InputValidator } from "apisecure";
 
 const passwordValidator = new RegexValidator(
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
@@ -113,7 +113,7 @@ app.post("/updatePassword", (req, res) => {
 
 ```jsx
 import React, { useState } from "react";
-import { InputProcessorFactory, InputValidator } from "securenx";
+import { InputProcessorFactory, InputValidator } from "apisecure";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -215,7 +215,7 @@ import {
   InputProcessorFactory,
   LengthValidator,
   AlphanumericValidator,
-} from "securenx";
+} from "apisecure";
 
 export default {
   data() {
@@ -259,7 +259,7 @@ export default {
 #### Custom Validator
 
 ```typescript
-import { Validator } from "securenx";
+import { Validator } from "apisecure";
 
 class CreditCardValidator implements Validator {
   validate(input: string): boolean {
@@ -281,7 +281,7 @@ import {
   InputValidator,
   LengthValidator,
   AlphanumericValidator,
-} from "securenx";
+} from "apisecure";
 
 const usernameValidators = [
   new LengthValidator(3, 20),
@@ -300,7 +300,7 @@ console.log(validateUsername("john_doe")); // false (not alphanumeric)
 #### Array Sanitization
 
 ```typescript
-import { InputProcessorFactory, sanitizeArray } from "securenx";
+import { InputProcessorFactory, sanitizeArray } from "apisecure";
 
 const numberSanitizer = InputProcessorFactory.createSanitizer("number");
 const rawNumbers = ["1", "2", "3", "four", "5"];

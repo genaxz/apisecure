@@ -6,7 +6,7 @@
 
 ```typescript
 import express from "express";
-import { CsrfProtector } from "securenx";
+import { CsrfProtector } from "apisecure";
 
 const app = express();
 const csrfProtector = new CsrfProtector();

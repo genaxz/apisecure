@@ -12,7 +12,7 @@ The `TwoFactorAuthManager` class provides functionality for implementing Time-ba
 ## Usage
 
 ```typescript
-import { TwoFactorAuthManager } from "securenx";
+import { TwoFactorAuthManager } from "apisecure";
 
 const twoFactorAuth = new TwoFactorAuthManager();
 
@@ -67,7 +67,7 @@ Here's an example of how to integrate 2FA into your login process:
 
 ```typescript
 import express from "express";
-import { TwoFactorAuthManager, AuthHelpers } from "securenx";
+import { TwoFactorAuthManager, AuthHelpers } from "apisecure";
 
 const app = express();
 const twoFactorAuth = new TwoFactorAuthManager();

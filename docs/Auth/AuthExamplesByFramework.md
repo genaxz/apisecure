@@ -17,7 +17,7 @@ This guide provides practical examples of how to use our authentication package 
 
 ```javascript
 const express = require("express");
-const { AuthHelpers } = require("securenx");
+const { AuthHelpers } = require("apisecure");
 
 const app = express();
 const authHelpers = new AuthHelpers();
@@ -100,7 +100,7 @@ export default Login;
 ### Server-side (Node.js) Example
 
 ```javascript
-const { PasswordPolicyEnforcer } = require("securenx");
+const { PasswordPolicyEnforcer } = require("apisecure");
 
 const policyEnforcer = new PasswordPolicyEnforcer({
   minLength: 10,
@@ -185,7 +185,7 @@ export default {
 
 ```javascript
 const express = require("express");
-const { PasswordResetManager } = require("securenx");
+const { PasswordResetManager } = require("apisecure");
 
 const app = express();
 const resetManager = new PasswordResetManager();
@@ -256,7 +256,7 @@ export default PasswordReset;
 
 ```javascript
 const express = require("express");
-const { SessionManager } = require("securenx");
+const { SessionManager } = require("apisecure");
 
 const app = express();
 const sessionManager = new SessionManager();
@@ -351,7 +351,7 @@ export default {
 
 ```javascript
 const express = require("express");
-const { TwoFactorAuthManager } = require("securenx");
+const { TwoFactorAuthManager } = require("apisecure");
 
 const app = express();
 const twoFactorAuth = new TwoFactorAuthManager();

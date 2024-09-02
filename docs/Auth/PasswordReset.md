@@ -11,7 +11,7 @@ The `PasswordResetManager` class provides functionality for secure password rese
 ## Usage
 
 ```typescript
-import { PasswordResetManager, PasswordPolicyEnforcer } from "securenx";
+import { PasswordResetManager, PasswordPolicyEnforcer } from "apisecure";
 
 const policyEnforcer = new PasswordPolicyEnforcer();
 const resetManager = new PasswordResetManager(policyEnforcer);
