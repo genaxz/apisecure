@@ -101,7 +101,7 @@ For detailed information on each feature, please refer to the following document
   - [Two-Factor Authentication](./docs/Auth/TwoFactorAuthentication.md)
 - [XSS Protection](./docs/XSSProtection.md)
 - [SQL Injection Prevention](./docs/SQLInjectionPrevention.md)
-- [Rate Limiting](./docs/RateLimiting.md)
+- [Rate Limiting](./docs/RateLimiter.md)
 - [Secure Headers](./docs/SecureHeaders.md)
 - [Input Validation](./docs/InputValidation.md)
 - [CSRF Protection](./docs/CSRFProtection.md)
