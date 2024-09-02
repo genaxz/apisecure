@@ -1,12 +1,12 @@
 {
   "name": "securenx",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A comprehensive API security library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nxgenz/securenx.git"
+    "url": "https://github.com/genaxz/securenx.git"
   },
   "scripts": {
     "build": "tsc",
@@ -29,14 +29,17 @@
     "security vulnerabilities",
     "security risks",
     "security practices",
-    "security tools"
+    "security tools",
+    "security checks",
+    "security audit",
+    "security testing"
   ],
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
-  "author": "RaviGonthina@nxgenz",
+  "author": "RaviGonthina@genaxz",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.7.7",

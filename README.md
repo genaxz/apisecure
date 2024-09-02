@@ -1,127 +1,129 @@
-# securenx: A Comprehensive API Security Library
+# Securenx is a Comprehensive Authentication Package
 
-**securenx** is a robust TypeScript library designed to enhance the security of your Node.js and Express applications. It provides a suite of tools for:
+A robust and flexible authentication solution for Node.js applications, providing a suite of security features to protect your web applications.
 
-- Input Validation
-- SQL Injection Prevention
-- XSS Protection
-- CSRF Protection
-- Authentication Helpers
-- Password Policy Enforcement
-- Password Reset Management
-- Two-Factor Authentication
-- Session Management
-- Rate Limiting and Brute Force Protection
+## Table of Contents
+
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Quick Start](#quick-start)
+4. [Documentation](#documentation)
+5. [Examples](#examples)
+6. [Contributing](#contributing)
+7. [License](#license)
+
+## Features
+
+- **Auth Helpers**: Password hashing, JWT token generation and verification, authentication and authorization middleware.
+- **Password Policy**: Customizable password strength enforcement, including length, character types, and common password checks.
+- **Password Reset**: Secure token generation and verification for password reset functionality.
+- **Session Management**: Flexible session handling with support for various storage backends.
+- **Two-Factor Authentication**: TOTP-based two-factor authentication with QR code generation and backup codes.
+- **XSS Protection**: Content sanitization and CSP header generation to prevent cross-site scripting attacks.
+- **SQL Injection Prevention**: Tools for creating parameterized queries and sanitizing user inputs.
+- **Rate Limiting**: Configurable rate limiting to prevent abuse and brute-force attacks.
+- **Secure Headers**: Easy setup for security-related HTTP headers.
 
 ## Installation
 
-To install securenx, use npm:
-
+```bash
 npm install securenx
-or
-yarn add securenx
+```
 
-## InputValidation Usage
+## Quick Start
 
-- The input validation module provides tools for validating and sanitizing user inputs.
+Here's a basic example of how to use some of the core features:
 
-### Server-side Example (Node.js with Express)
-
-```typescript
-import express from "express";
-import {
-  InputProcessorFactory,
-  InputValidator,
-  truncateInput,
-} from "your-package-name";
+```javascript
+const express = require("express");
+const { AuthHelpers, SessionManager, XssProtector } = require("securenx");
 
 const app = express();
+const authHelpers = new AuthHelpers();
+const sessionManager = new SessionManager();
+const xssProtector = new XssProtector();
+
 app.use(express.json());
+app.use(sessionManager.middleware());
 
-app.post("/register", (req, res) => {
-  const { email, password, username } = req.body;
+// XSS protection middleware
+app.use((req, res, next) => {
+  const cspHeader = xssProtector.generateCspHeader({
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+  });
+  res.setHeader("Content-Security-Policy", cspHeader);
+  next();
+});
 
-  // Validate email
-  const emailValidator = InputProcessorFactory.createValidator("email");
-  if (!emailValidator.validate(email)) {
-    return res.status(400).json({ error: "Invalid email" });
+// User registration
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  const hashedPassword = await authHelpers.hashPassword(password);
+  // Save user to database
+  res.json({ message: "User registered successfully" });
+});
+
+// User login
+app.post(
+  "/login",
+  authHelpers.authenticate(async (username) => {
+    // Fetch user from database
+    // Return user object or null if not found
+  }),
+  async (req, res) => {
+    const session = await sessionManager.createSession(req.user.id, {
+      role: req.user.role,
+    });
+    res.json({ message: "Logged in successfully", sessionId: session.id });
   }
+);
 
-  // Validate password length
-  const passwordValidator = new LengthValidator(8, 50);
-  if (!passwordValidator.validate(password)) {
-    return res
-      .status(400)
-      .json({ error: "Password must be between 8 and 50 characters" });
-  }
-
-  // Sanitize username
-  const usernameSanitizer = new StringSanitizer(20);
-  const sanitizedUsername = usernameSanitizer.sanitize(username);
-
-  // Prevent DoS attacks
-  const truncatedPassword = truncateInput(password, 100);
-
-  // Process registration...
-  res.json({ message: "Registration successful", username: sanitizedUsername });
+// Protected route
+app.get("/profile", authHelpers.authorize("user"), (req, res) => {
+  res.json({ user: req.session.userId, role: req.session.data.role });
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
 ```
 
-### Client-side Example (React with TypeScript)
+## Documentation
 
-```tsx
-import React, { useState } from "react";
-import { InputProcessorFactory, InputValidator } from "your-package-name";
+For detailed information on each feature, please refer to the following documentation:
 
-const ContactForm: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<string[]>([]);
+- [Auth Features Overview](./docs/Auth/AuthFeaturesOverview.md)
+  - [Examples](./docs/Auth/AuthExamplesByFramework.md)
+  - [Auth Helpers](./docs/Auth/AuthHelpers.md)
+  - [Password Policy](./docs/Auth/PasswordPolicy.md)
+  - [Password Reset](./docs/Auth/PasswordReset.md)
+  - [Session Management](./docs/Auth/SessionManagement.md)
+  - [Two-Factor Authentication](./docs/Auth/TwoFactorAuthentication.md)
+- [XSS Protection](./docs/XSSProtection.md)
+- [SQL Injection Prevention](./docs/SQLInjectionPrevention.md)
+- [Rate Limiting](./docs/RateLimiting.md)
+- [Secure Headers](./docs/SecureHeaders.md)
+- [Input Validation](./docs/InputValidation.md)
+- [CSRF Protection](./docs/CSRFProtection.md)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: string[] = [];
+## Examples
 
-    // Validate email
-    const emailValidator = InputProcessorFactory.createValidator("email");
-    if (!emailValidator.validate(email)) {
-      newErrors.push("Invalid email address");
-    }
+For comprehensive examples of how to use this package in both server-side and client-side projects, check out our [Examples Guide](./docs).
 
-    // Validate message length
-    const messageValidator = new LengthValidator(10, 500);
-    if (!messageValidator.validate(message)) {
-      newErrors.push("Message must be between 10 and 500 characters");
-    }
+## Contributing
 
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-    } else {
-      // Sanitize inputs before sending to server
-      const emailSanitizer = InputProcessorFactory.createSanitizer("string");
-      const messageSanitizer = new StringSanitizer(500);
+We welcome contributions soon! Stay tuned for details on how to submit pull requests, report issues, and suggest improvements.
 
-      const sanitizedEmail = emailSanitizer.sanitize(email);
-      const sanitizedMessage = messageSanitizer.sanitize(message);
+## License
 
-      // Send sanitized data to server...
-      console.log("Sending:", {
-        email: sanitizedEmail,
-        message: sanitizedMessage,
-      });
-    }
-  };
+This project is licensed under the MIT License. [LICENSE](./LICENSE)
 
-  return <form onSubmit={handleSubmit}>{/* Form JSX */}</form>;
-};
+## Disclaimer
 
-export default ContactForm;
-```
+This software is provided "as is," and does not guarantee complete protection against all security threats. Users should implement additional security measures and keep their systems updated, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
 
-### License
+## Support
 
-- This project is licensed under the MIT License - see the LICENSE file for details.
+If you encounter any issues or have questions, please file an issue on the GitHub repository and we will review and fix accordingly.
 
-- This README provides a comprehensive overview of the securenx library, including installation instructions and detailed usage examples for each feature. You may want to adjust some parts based on the exact implementation details or add more specific information about your project's structure and usage.
+---
