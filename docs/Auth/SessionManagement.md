@@ -14,7 +14,7 @@ The `SessionManager` class provides a flexible session management system for web
 
 ```typescript
 import express from "express";
-import { SessionManager } from "apisecure";
+import { SessionManager } from "securestack";
 
 const app = express();
 const sessionManager = new SessionManager();

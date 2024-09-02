@@ -1,12 +1,12 @@
 {
-  "name": "apisecure",
+  "name": "securestack",
   "version": "0.1.0",
   "description": "A comprehensive authentication and security solution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/genaxz/apisecure.git"
+    "url": "https://github.com/genaxz/securestack.git"
   },
   "scripts": {
     "build": "tsc",

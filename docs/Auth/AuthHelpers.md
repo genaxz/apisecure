@@ -12,7 +12,7 @@ The `AuthHelpers` class provides essential methods for handling authentication a
 ## Usage
 
 ```typescript
-import { AuthHelpers, User } from "apisecure";
+import { AuthHelpers, User } from "securestack";
 
 const authHelpers = new AuthHelpers();
 

@@ -25,7 +25,7 @@ Basic usage with Express.js:
 
 ```javascript
 const express = require("express");
-const { SecureHeaders } = require("apisecure");
+const { SecureHeaders } = require("securestack");
 
 const app = express();
 
@@ -48,7 +48,7 @@ Implementing Secure Headers in a Koa.js application:
 
 ```javascript
 const Koa = require("koa");
-const { SecureHeaders } = require("apisecure");
+const { SecureHeaders } = require("securestack");
 
 const app = new Koa();
 
@@ -71,7 +71,7 @@ Using Secure Headers in a Nest.js application:
 ```typescript
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { SecureHeaders } from "apisecure";
+import { SecureHeaders } from "securestack";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -92,7 +92,7 @@ Implementing Secure Headers in a vanilla Node.js server:
 
 ```javascript
 const http = require("http");
-const { SecureHeaders } = require("apisecure");
+const { SecureHeaders } = require("securestack");
 
 const server = http.createServer((req, res) => {
   SecureHeaders.set(res);
@@ -142,7 +142,7 @@ res.setHeader("X-Frame-Options", "ALLOW-FROM https://trusted-site.com");
 Extending the SecureHeaders class to add custom headers:
 
 ```typescript
-import { SecureHeaders } from "apisecure";
+import { SecureHeaders } from "securestack";
 
 class CustomSecureHeaders extends SecureHeaders {
   static set(res: any): void {

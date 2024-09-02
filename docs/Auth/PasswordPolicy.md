@@ -11,7 +11,7 @@ The `PasswordPolicyEnforcer` class provides a robust system for enforcing passwo
 ## Usage
 
 ```typescript
-import { PasswordPolicyEnforcer } from "apisecure";
+import { PasswordPolicyEnforcer } from "securestack";
 
 const policyEnforcer = new PasswordPolicyEnforcer({
   minLength: 12,

@@ -35,7 +35,7 @@ Basic usage with Express.js:
 
 ```javascript
 const express = require("express");
-const { RateLimiter, BruteForceProtection } = require("apisecure");
+const { RateLimiter, BruteForceProtection } = require("securestack");
 
 const app = express();
 
@@ -67,7 +67,7 @@ Implementing rate limiting and brute force protection in a Nest.js application:
 
 ```typescript
 import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
-import { RateLimiter, BruteForceProtection } from "apisecure";
+import { RateLimiter, BruteForceProtection } from "securestack";
 
 @Module({
   // ... other module configuration
@@ -107,7 +107,7 @@ Using rate limiting and brute force protection with Koa.js:
 ```javascript
 const Koa = require("koa");
 const Router = require("koa-router");
-const { RateLimiter, BruteForceProtection } = require("apisecure");
+const { RateLimiter, BruteForceProtection } = require("securestack");
 
 const app = new Koa();
 const router = new Router();
@@ -150,7 +150,7 @@ Implementing rate limiting and brute force protection in a Fastify application:
 
 ```javascript
 const fastify = require("fastify")();
-const { RateLimiter, BruteForceProtection } = require("apisecure");
+const { RateLimiter, BruteForceProtection } = require("securestack");
 
 const rateLimiter = new RateLimiter();
 const bruteForceProtection = new BruteForceProtection();

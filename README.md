@@ -1,4 +1,4 @@
-# apisecure is a Comprehensive Authentication Package
+# securestack is a Comprehensive Authentication Package
 
 A robust and flexible authentication solution for Node.js applications, providing a suite of security features to protect your web applications.
 
@@ -27,7 +27,7 @@ A robust and flexible authentication solution for Node.js applications, providin
 ## Installation
 
 ```bash
-npm install apisecure
+npm install securestack
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ Here's a basic example of how to use some of the core features:
 
 ```javascript
 const express = require("express");
-const { AuthHelpers, SessionManager, XssProtector } = require("apisecure");
+const { AuthHelpers, SessionManager, XssProtector } = require("securestack");
 
 const app = express();
 const authHelpers = new AuthHelpers();
