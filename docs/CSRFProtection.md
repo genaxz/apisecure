@@ -253,7 +253,3 @@ new CsrfProtector(options?: Partial<CsrfOptions>)
 - **Token Mismatch Errors**: Ensure the token in the cookie matches the token in the header or form field.
 - **Missing Token Errors**: Check if the CSRF middleware is applied correctly and the token is being generated.
 - **Cross-Origin Issues**: Verify your CORS settings if you're making cross-origin requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

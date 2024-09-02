@@ -344,7 +344,3 @@ console.log(sanitizedNumbers); // [1, 2, 3, 5]
 5. Sanitize inputs before storing or processing them to prevent injection attacks.
 6. Combine multiple validators when necessary to enforce stricter rules.
 7. Use the `truncateInput` function to prevent DoS attacks via extremely long inputs.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
